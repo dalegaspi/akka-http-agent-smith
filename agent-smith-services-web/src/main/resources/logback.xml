@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="5 seconds">
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date{MM/dd HH:mm:ss} ${HOSTNAME} %highlight(%-5level)[%thread] %logger{1} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOGBACK_DIR:-.}/everest.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>everest.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{MM/dd HH:mm:ss} ${HOSTNAME} %-5level[%.15thread] %logger{1} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC-CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>500</queueSize>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="CONSOLE" />
+    </appender>
+
+    <appender name="ASYNC-FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>500</queueSize>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="FILE" />
+    </appender>
+
+    <logger name="akka" level="DEBUG" />
+    <logger name="spray" level="DEBUG" />
+    <logger name="scalacache.caffeine" level="INFO" />
+    <logger name="com.ihaveathanoscopter.akkahttp.services" level="INFO" />
+
+    <logger name="net.spy.memcached" level="INFO" />
+    <logger name="org.fusesource.scalate" level="INFO" />
+
+    <logger name="scalaj.http" level="DEBUG" />
+    <logger name="org.redisson" level="INFO" />
+
+    <root level="INFO">
+        <appender-ref ref="ASYNC-CONSOLE"/>
+    </root>
+</configuration>
